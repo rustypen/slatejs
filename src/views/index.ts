@@ -1,10 +1,14 @@
-interface Index{
-    type: string,
-    data: string
+// import defaults from './defaults';
+import utils from '../utils/utils';
+
+function createData(mutationRecord:any){
+
+
 }
 
-function index(mutationRecord: any, Slate: any):void{
-    Slate.updateState("data")
-}
 
-export default index;
+export default function (mutationRecord: any, slate: any):void{
+    const data = createData(mutationRecord);
+    
+    slate.updateState(data)
+}

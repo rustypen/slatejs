@@ -1,14 +1,14 @@
 import './style.scss';
-import View from './views/index';
-
+import view from './views/index';
+import renderer from './renderer/index';
 
 class Slate{
     editor: HTMLDivElement;
     state: {};
     constructor(editorElement: HTMLDivElement){
+        this.state = {};
         this.editor = editorElement;
         this.init();
-        this.state = {};
     }
 
     // Initialize editor
@@ -17,7 +17,7 @@ class Slate{
         const Slate = this;
         // call view on every change
         let observer = new MutationObserver((mutationRecord)=>{
-            return View(mutationRecord, Slate)
+            return view(mutationRecord, Slate)
         });
 
         this.editor.addEventListener('focus',()=>{
@@ -27,17 +27,32 @@ class Slate{
                 characterDataOldValue: true // pass old data to callback
             });
         })
+
+        const data = [
+            {
+                type: "h3",
+                id: "abcdef",
+                child: [
+                    {
+                        type: "TEXT_NODE",
+                        id: "ghijk",
+                        value: "placeholder...",
+                    }
+                ]
+            }
+        ]
+        this.updateState(data)
     }
 
     updateState(data: any){
-        this.state = {
-            data
-        }
-        this.render(this.state)
+        this.state = [...data];
+        
+        this.render()
     }
 
-    render(data: any){
-        console.log(data)
+    render(){
+        const slate = this;
+        renderer({slate});
     }
     
 }
@@ -45,5 +60,3 @@ class Slate{
 
 
 let editor = new Slate(document.querySelector('.slatejs'));
-
-console.log(editor)
