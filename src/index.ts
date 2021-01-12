@@ -2,6 +2,13 @@ import './style.scss';
 import view from './views/index';
 import renderer from './renderer/index';
 
+interface Data{
+    type: string;
+    props: any;
+    children?: Data[] | string | null;
+}
+
+
 class Slate{
     editor: HTMLDivElement;
     state: {};
@@ -14,38 +21,45 @@ class Slate{
     // Initialize editor
     init(){
         this.editor.setAttribute("contentEditable","true");
-        const Slate = this;
-        // call view on every change
-        let observer = new MutationObserver((mutationRecord)=>{
-            return view(mutationRecord, Slate)
-        });
+        // const slate = this;
 
-        this.editor.addEventListener('focus',()=>{
-            observer.observe(this.editor, {
-                childList: true, // observe direct children
-                subtree: true, // and lower descendants too
-                characterDataOldValue: true // pass old data to callback
-            });
+        this.editor.addEventListener('beforeinput',(e)=>{
+            console.log(e)
+            e.preventDefault();
         })
 
-        const data = [
-            {
-                type: "h3",
-                id: "abcdef",
-                child: [
-                    {
-                        type: "TEXT_NODE",
-                        id: "ghijk",
-                        value: "placeholder...",
-                    }
-                ]
-            }
-        ]
+
+        const data: Data = {
+            type: "div",
+            props: {
+                className: "text"
+            }, 
+            children: [
+                {
+                    type: "h1",
+                    props: {
+                        className: "primary"
+                    },
+                    children: "QndReact is Quick and dirty react"
+                },
+                {
+                    type: "p",
+                    props: null,
+                    children: "It is about building your own React in 90 lines of JavaScript"
+                }
+            ]
+        }
+
         this.updateState(data)
     }
 
     updateState(data: any){
-        this.state = [...data];
+        if(typeof data === "function"){
+            this.state = data(this.state);
+        } 
+        else{
+            this.state = {...data};
+        }
         
         this.render()
     }

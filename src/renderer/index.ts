@@ -1,58 +1,47 @@
+import Ash from '../core/index';
+
 interface Renderer{
   slate: any;
 }
 
 
-interface NewElement{
-  type: string;
-  value?: string;
-  id: string;
-}
-
-function newElement({type, value, id}:NewElement){
-
-  let tag:HTMLElement|Text;
-  if(type === "TEXT_NODE"){
-    tag = document.createTextNode(value);
-  }
-  else{
-    tag = document.createElement(type);
-    (tag as HTMLElement).setAttribute("key", id);
-  }
-  return tag;
-}
-
-
-function domCreator(state:any){
-
+function stateRenderer (state:any){
+  
   function iterator(final:any[], current:any){
-    let tag: HTMLElement | Text;
-    tag = newElement({
-      type:current.type, 
-      value:current.value || undefined, 
-      id: current.id
-    });
+    
+    return [ 
+      ...final,
+      Ash.createElement(
+        current.type,
+        current.props,
+        (function(children){
+          if(Array.isArray(children)){
+            return current.children.reduce(iterator,[]);
+          }
+          return children;
+        })(current.children)
+      )
+    ]
 
-    if(current.child){
-      const children:HTMLElement[] = current.child.reduce(iterator,[]);
-      children.map((child: HTMLElement)=>{
-        tag.appendChild(child)
-      })
-    }
-
-    final.push(tag)
-    return final;
   }
 
-  const dom = state.reduce(iterator,[])
-
-  return dom;
+  if(state){
+    const dom = Ash.createElement(
+      state.type,
+      state.props,
+      ...state.children.reduce(iterator,[])
+    )
+    return dom;
+  }
+  return null;
 }
+
 
 
 export default function ({slate}: Renderer){
-  const domElements = domCreator(slate.state);
-  domElements.map((element:HTMLElement)=>{
-    slate.editor.appendChild(element)
-  })
+  const state = slate.state;
+
+  const element = stateRenderer(state)
+
+  Ash.render(element,slate.editor);
 }
