@@ -34,9 +34,10 @@ class Slate{
             props: {
                 className: "text"
             }, 
+            // children: "QndReact is Quick and dirty react"
             children: [
                 {
-                    type: "h1",
+                    type: "h3",
                     props: {
                         className: "primary"
                     },
@@ -45,7 +46,23 @@ class Slate{
                 {
                     type: "p",
                     props: null,
-                    children: "It is about building your own React in 90 lines of JavaScript"
+                    // children: "It is about building your own React in 90 lines of JavaScript"
+                    children: [
+                        {
+                            type: "span",
+                            props: {
+                                className: "primary"
+                            },
+                            children: "QndReact is Quick and dirty react"
+                        },
+                        {
+                            type: "span",
+                            props: {
+                                className: "primary"
+                            },
+                            children: "QndReact is Quick and dirty react"
+                        },
+                    ]
                 }
             ]
         }

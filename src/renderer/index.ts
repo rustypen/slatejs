@@ -14,11 +14,11 @@ function stateRenderer (state:any){
       Ash.createElement(
         current.type,
         current.props,
-        (function(children){
+        ...(function(children){
           if(Array.isArray(children)){
             return current.children.reduce(iterator,[]);
           }
-          return children;
+          return [children];
         })(current.children)
       )
     ]
@@ -29,7 +29,12 @@ function stateRenderer (state:any){
     const dom = Ash.createElement(
       state.type,
       state.props,
-      ...state.children.reduce(iterator,[])
+      ...(function(children){
+        if(Array.isArray(children)){
+          return state.children.reduce(iterator,[]);
+        }
+        return [children];
+      })(state.children)
     )
     return dom;
   }
