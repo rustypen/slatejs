@@ -1,5 +1,6 @@
 import view from '../view/index';
-
+import comparator from './comparator';
+import _ from 'lodash';
 
 function createElement(type:string, props, ...children) {
     return {
@@ -63,11 +64,15 @@ function createDom(fiber: any) {
 
 function index(model:any){
     
-    const data = createElement(
+    this.state.data = (this.state.data || "") + model.data;
+    let data = createElement(
         "div",
         { id: "foo" },
-        createElement("a", null, model.data)
-    )
+        this.state.data
+    );
+    
+    console.log(this);
+
     view.call(this,data);
 }
 

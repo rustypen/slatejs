@@ -22,6 +22,7 @@ class Slate{
         const slate = this;
 
         this.editor.addEventListener('beforeinput',(e)=>{
+            // console.log(e)
             control.call(this, e)                                                    
             e.preventDefault();
         })
